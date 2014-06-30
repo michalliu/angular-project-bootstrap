@@ -1,0 +1,15 @@
+extends layout/common
+
+block extrahead
+  link(rel="stylesheet", href=cdn + "/dev/css/page.css")
+
+block footer
+  script(src=cdn + "dev/js/lib/angular.js")
+  script(src=cdn + "dev/js/lib/jquery-1.11.1.js")
+  script(src=cdn + "dev/js/lib/pipeline/angular-route.js")
+  script(src=cdn + "dev/js/lib/pipeline/angular-jquery-cookies.js")
+  script(src=cdn + "dev/js/providers/page.js")
+  script(src=cdn + "dev/js/providers/filters.js")
+  script(src=cdn + "dev/js/app.js")
+  script.
+    angular.module('appTemplateCache', []);//prevent error on dev mode

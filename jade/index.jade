@@ -1,0 +1,8 @@
+extends layout/common
+
+block extrahead
+  link(rel="stylesheet", href=cdn + "css/all.css?max_age=" + maxage + "&v=" + cssversion)
+
+block footer
+  script(src=cdn + "js/lib.js?max_age=" + maxage + "&v=" + jslibversion)
+  script(src=cdn + "js/page.js?max_age=" + maxage + "&v=" + jspageversion)
