@@ -27,13 +27,17 @@
 			templateUrl: "html/room.html",
 			controller: "roomControl"
 		}).
+		when('/index',{
+			template:"",
+			controller: "indexControl"
+		}).
 		otherwise({
 			redirectTo: entry
 		});
 	}]).
 
 	run(["$rootScope", "page", function ($rootScope, page) {
-		console.log("[ng-app] init");
+		page.log("init");
 	}]);
 
 	angular.module("appControllers", []);

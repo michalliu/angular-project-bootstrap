@@ -5,14 +5,15 @@ block extrahead
   script(src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js", data-appid="101001181", data-redirecturi="http://wq.qq.com/live/callback.html" charset="utf-8")
 
 block footer
-  script(src=cdn + "dev/js/lib/angular.js")
-  script(src=cdn + "dev/js/lib/jquery-1.11.1.js")
-  script(src=cdn + "dev/js/lib/pipeline/angular-route.js")
-  script(src=cdn + "dev/js/lib/pipeline/angular-jquery-cookies.js")
-  script(src=cdn + "dev/js/app.js")
-  script(src=cdn + "dev/js/providers/page.js")
-  script(src=cdn + "dev/js/providers/filters.js")
-  script(src=cdn + "dev/js/controllers/login.js")
-  script(src=cdn + "dev/js/controllers/room.js")
+  script(src=cdn + "js/lib/angular.js")
+  script(src=cdn + "js/lib/jquery-1.11.1.js")
+  script(src=cdn + "js/lib/pipeline/angular-route.js")
+  script(src=cdn + "js/lib/pipeline/angular-jquery-cookies.js")
+  script(src=cdn + "js/app.js")
+  script(src=cdn + "js/providers/page.js")
+  script(src=cdn + "js/providers/filters.js")
+  script(src=cdn + "js/controllers/login.js")
+  script(src=cdn + "js/controllers/room.js")
+  script(src=cdn + "js/controllers/index.js")
   script.
     angular.module('appTemplateCache', []);//prevent error on dev mode
