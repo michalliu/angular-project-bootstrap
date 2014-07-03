@@ -2,6 +2,7 @@ extends layout/common
 
 block extrahead
   link(rel="stylesheet", href=cdn + "dev/css/page.css")
+  script(src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js", data-appid="101001181", data-redirecturi="http://wq.qq.com/live/callback.html" charset="utf-8")
 
 block footer
   script(src=cdn + "dev/js/lib/angular.js")
@@ -11,5 +12,7 @@ block footer
   script(src=cdn + "dev/js/app.js")
   script(src=cdn + "dev/js/providers/page.js")
   script(src=cdn + "dev/js/providers/filters.js")
+  script(src=cdn + "dev/js/controllers/login.js")
+  script(src=cdn + "dev/js/controllers/room.js")
   script.
     angular.module('appTemplateCache', []);//prevent error on dev mode
