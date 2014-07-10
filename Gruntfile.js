@@ -18,7 +18,7 @@ module.exports = function(grunt){
 			lib:{
 				src:["js/lib/jquery-1.11.1.js",
 					"js/lib/angular.js",
-					"js/lib/pipeline/**/*.js"],     // other libs which the order isn't important
+					"js/lib/parallel/**/*.js"],     // other libs which the order isn't important
 				dest: "temp/js/lib.js"           // concat libs into one file
 			},
 			page:{
@@ -29,12 +29,12 @@ module.exports = function(grunt){
 				dest: "temp/js/page.js"          // concated pages logic to one
 			},
 			head:{
-				src:["js/head/pipeline/**/*.js"], // concat all the files need to run at head
+				src:["js/head/parallel/**/*.js"], // concat all the files need to run at head
 				dest: "temp/js/head.js"
 			},
 			css:{
 				src:["css/page.css",
-					"css/pipeline/**/*.js"],      // concat all stylesheets to one
+					"css/parallel/**/*.js"],      // concat all stylesheets to one
 				dest: "temp/all.css"
 			}
 		},
