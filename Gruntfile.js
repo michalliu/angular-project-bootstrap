@@ -26,7 +26,7 @@ module.exports = function(grunt){
 					"js/providers/*.js",         // angular providers(plugins)
 					"js/controllers/**/*.js"    // angular page controllers
 					],
-				dest: "temp/js/page.js"          // concated pages logic to one
+				dest: "temp/js/page.js"          // concated views logic to one
 			},
 			head:{
 				src:["js/head/parallel/**/*.js"], // concat all the files need to run at head
@@ -65,7 +65,7 @@ module.exports = function(grunt){
 					base: "",
 					module: 'appTemplateCache'
 				},
-				src: [ 'pages/**/*.html' ],
+				src: [ 'views/**/*.html' ],
 				dest: 'js/providers/templates.js'
 			}
 		},
@@ -87,7 +87,7 @@ module.exports = function(grunt){
 				},
 				files:[{
 					src: ["jade/index.jade"],
-					dest: "index.html"
+					dest: releaselocal + "index.html"
 				}]
 			}
 		}
@@ -129,7 +129,7 @@ module.exports = function(grunt){
 //					mode:"zip"
 //				},
 //				files:[
-//					{expand:true, src: ["index.html","pages/**/*.html"],dest:"/"}
+//					{expand:true, src: ["index.html","views/**/*.html"],dest:"/"}
 //				]
 //			}
 //		}
@@ -143,7 +143,7 @@ module.exports = function(grunt){
 	//grunt.loadNpmTasks('grunt-contrib-compress');
 	//grunt.loadNpmTasks('grunt-include-replace');
 
-	grunt.registerTask('default',['html2js','concat','uglify',"cssmin"]);
-	grunt.registerTask('release',['default']);
 	grunt.registerTask('css',['concat:css','cssmin']);
+	grunt.registerTask('default',['html2js','concat','uglify',"cssmin","jade:release", "jade:debug"]);
+	grunt.registerTask('debug',['jade:debug']);
 };

@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular,window,ActiveXObject*/
 (function appInit() { "use strict";
 
 	var entry="/index";
@@ -18,27 +18,82 @@
 		// If you must support IE7, you should disable $sce completely.
 		// http://stackoverflow.com/questions/18506458/sceiequirks-strict-contextual-escaping-does-not-support-internet-explorer-ve
 		$sceProvider.enabled(false);
+		
+		var conditions = {
+			// 浏览器兼容性检查
+			browserCheckOnce: ["$q","$location","page", function ($q,$location,page) {
+				var q=$q.defer();
+				var undef;
+				var browserCheckResult=page.cache.get("browserCheckResult");
+
+				if (browserCheckResult === undef) {
+					// 尚未进行过浏览器检查
+					page.log("执行浏览器检查");
+					if (!window.ActiveXObject) {
+						q.reject();
+						page.cache.put("errorMessage","暂不支持您的浏览器，请使用IE浏览器访问");
+						page.redirectTo("/error");
+						page.log("ActiveXObject不存在，不支持的浏览器");
+						page.cache.put("browserCheckResult", false);
+					} else {
+						q.resolve();
+						page.cache.put("browserCheckResult", true);
+					}
+				} else if (browserCheckResult){
+					page.log("浏览器检查通过");
+					q.resolve();
+				} else {
+					page.log("浏览器检查未通过");
+					q.reject();
+					page.redirectTo("/error");
+				}
+				return q.promise;
+			}]
+		};
+
 		$route.
 		when('/login',{
-			templateUrl: "html/login.html",
-			controller: "loginControl"
+			templateUrl: "views/login.html",
+			controller: "loginControl",
+			resolve: conditions
 		}).
 		when('/room',{
-			templateUrl: "html/room.html",
-			controller: "roomControl"
+			templateUrl: "views/room.html",
+			controller: "roomControl",
+			resolve: conditions
 		}).
 		when('/index',{
 			template:"",
-			controller: "indexControl"
+			controller: "indexControl",
+			resolve: conditions
+		}).
+		when('/error', {
+			template:"{{message}}",
+			controller: "errorControl"
 		}).
 		otherwise({
 			redirectTo: entry
 		});
+
 	}]).
 
-	run(["$rootScope", "page", function ($rootScope, page) {
+	run(["$rootScope", "page", "$location", function ($rootScope, page, $location) {
 		page.log("init");
+		$rootScope.$on('$routeChangeStart', function(angularEvent, next) {
+			// 禁止直接跳转到除 /index 以外的页面
+			var newLocation;
+			if (next && next.$$route) {
+				newLocation = next.$$route.originalPath;
+				if (oldLocation === null && newLocation != "/index") {
+					$location.path("/index");
+					return;
+				}
+			}
+			oldLocation = newLocation;
+		});
 	}]);
+
+	var oldLocation = null;
 
 	angular.module("appControllers", []);
 	angular.module("appProviders", []);

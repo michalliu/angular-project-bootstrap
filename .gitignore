@@ -3,3 +3,6 @@
 /jade/config.json
 /node_modules
 *.swp
+/doc
+/raw
+/temp

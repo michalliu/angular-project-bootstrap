@@ -1,19 +1,19 @@
 extends layout/common
 
 block extrahead
-  link(rel="stylesheet", href=cdn + "dev/css/page.css")
-  script(src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js", data-appid="101001181", data-redirecturi="http://wq.qq.com/live/callback.html" charset="utf-8")
+  link(rel="stylesheet", href=cdn + "css/page.css")
 
 block footer
   script(src=cdn + "js/lib/angular.js")
   script(src=cdn + "js/lib/jquery-1.11.1.js")
-  script(src=cdn + "js/lib/pipeline/angular-route.js")
-  script(src=cdn + "js/lib/pipeline/angular-jquery-cookies.js")
+  script(src=cdn + "js/lib/parallel/angular-route.js")
+  script(src=cdn + "js/lib/parallel/angular-jquery-cookies.js")
   script(src=cdn + "js/app.js")
   script(src=cdn + "js/providers/page.js")
   script(src=cdn + "js/providers/filters.js")
   script(src=cdn + "js/controllers/login.js")
   script(src=cdn + "js/controllers/room.js")
   script(src=cdn + "js/controllers/index.js")
+  script(src=cdn + "js/controllers/error.js")
   script.
     angular.module('appTemplateCache', []);//prevent error on dev mode

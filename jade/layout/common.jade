@@ -5,7 +5,10 @@ html#ng-app(ng-app="app")
     title 微群直播
     <!--[if lte IE 7]><script src="#{cdn}js/lib/compat/json3.js"></script><![endif]-->
     block extrahead
+    script(src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js", data-appid="101001181", data-redirecturi="http://wq.qq.com/live/callback.html" charset="utf-8")
   body
+    <h3>微群直播客户端，内部开发版</h3>
     div(ng-view)
+    object(id="liveUpload",classid="clsid:BE6DBDF8-2151-401B-9AA3-55216E562D39",codebase="http://wq.qq.com/live/raw/TencentLiveUpload.cab#version=1,0,0,7",width="0",height="0")
   block footer
   <!--lastupdate #{lastupdate}-->

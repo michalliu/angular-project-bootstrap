@@ -1,0 +1,12 @@
+<h1>微群直播</h1>
+<div><span>{{profile.user.nickname}}</span><a href="javascript:void(0);" ng-click="logout()">退出</a></div>
+<p>共有{{grouplist.groupListTotal}}个群</p>
+<ol>
+	<li ng-repeat="groupInfo in grouplist.groupInfoList"><a href="javascript:void(0);" ng-click="enterOrSwitchAudioRoom(groupInfo.group.gid)" >{{groupInfo.group.gname}}</span></a></li>
+</ol>
+<button ng-click="startLiveAudio()" ng-disabled="!currentGroupId || audioRoomInfo">开始直播</button><button ng-click="stopLiveAudio()" ng-disabled="!audioRoomInfo">暂停直播</button>
+<p>背景音乐</p>
+<button ng-click="toggleBackgroundMusic()" ng-disabled="!audioRoomInfo">{{backgroundMusicEnabled && "关闭" || "打开"}}背景音乐</button>
+<p>音量控制</p>
+<p>麦克风音量:{{micVolume}} <button ng-click="decreaseMicVolume()">减小</button><button ng-click="increaseMicVolume()">增大</button></p>
+<p>背景音乐音量:{{backgroundMusicVolume}} <button ng-click="decreaseBackgroundMusicVolume()">减小</button><button ng-click="increaseBackgroundMusicVolume()">增大</button></p>
