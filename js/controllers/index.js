@@ -13,12 +13,12 @@
 		page.log("index control init");
 
 		// 未登录，跳转到登录页
-		if (!page.isLogin()) {
-			page.log("login needed");
+		if (!page.isBasicLogin()) {
+			page.log("qq connect login needed");
 			page.redirectTo("/login");
 			return;
 		}
-
+		
 		page.redirectTo("/room");
 
 	}]);

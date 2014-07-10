@@ -22,6 +22,7 @@
 
 		var pullMicStatusPromise;
 
+		// 到这里来信息必须已经完全填充
 		if(!page.isLogin()) {
 			page.redirectTo("/index");
 			return;

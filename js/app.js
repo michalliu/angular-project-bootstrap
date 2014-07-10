@@ -60,7 +60,34 @@
 		when('/room',{
 			templateUrl: "views/room.html",
 			controller: "roomControl",
-			resolve: conditions
+			resolve: {
+				browserCheck: conditions.browserCheckOnce,
+				groupInfoFeched: ["$q","page", function ($q,page) {
+					// 需要进一步拿到openid,accesstoken,uid,grouplist
+					var q=$q.defer();
+					page.log("user login info is incomplete, fetch openid...");
+					page.getOpenID(function (id, token) {
+						page.setLoginInfo({
+							"openid": id,
+							"token": token
+						});
+						page.log("login info filled, fetch profile...");
+						page.api.getProfile().success(function (res) {
+							if (res.code === 0 && res.data) {
+								page.setLoginProfile(res.data);
+								q.resolve();
+							} else {
+								q.reject();
+								page.dialog.alert(res.message);
+							}
+						}).error(function () {
+							q.reject();
+							page.dialog.alert("获取用户信息失败");
+						});
+					});
+					return q.promise;
+				}]
+			}
 		}).
 		when('/index',{
 			template:"",
