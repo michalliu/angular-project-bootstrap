@@ -1,6 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 html#ng-app(ng-app="app")
   head
+    meta(http-equiv="X-UA-Compatible",content="IE=8,9")
     meta(charset="utf-8")
     title 微群直播
     <!--[if lte IE 7]><script src="#{cdn}js/lib/compat/json3.js"></script><![endif]-->
@@ -9,6 +10,22 @@ html#ng-app(ng-app="app")
     block extrahead
   body
     div(ng-view)
-    object(id="liveUpload",classid="clsid:BE6DBDF8-2151-401B-9AA3-55216E562D39",codebase="http://wq.qq.com/live/raw/TencentLiveUpload.cab#version=1,0,0,7",width="0",height="0")
+    object(id="liveUpload",classid="clsid:BE6DBDF8-2151-401B-9AA3-55216E562D39",codebase="http://imgcache.gtimg.cn/music/wegroup/TencentLiveUpload.cab#version=1,0,0,14",width="0",height="0")
+    div#confirmDialog.mask.hide
+      div.ui-modal
+        button#confirmDialogClose.ui-btn.ui-btn-link(type="button") &times;
+        div.ui-modal-body
+          h5#confirmDialogTitle 提示
+          p#confirmDialogContent
+        div.ui-modal-footer
+          a#confirmDialogConfirmButton.ui-btn.ui-btn-primary.ui-btn-wid(href="javascript:void(0);") 确定
+          a#confirmDialogCloseButton.ui-btn.ui-btn-wid(href="javascript:;") 关闭
+    div#alertDialog.mask.hide
+      div.ui-modal
+        button#alertDialogClose.ui-btn.ui-btn-link(type="button") &times;
+        div.ui-modal-body
+          p#alertDialogContent
+        div.ui-modal-footer
+          a#alertDialogCloseButton.ui-btn.ui-btn-wid(href="javascript:;") 确定
   block footer
   <!--lastupdate #{lastupdate}-->

@@ -90,7 +90,7 @@ module.exports = function(grunt){
 					dest: releaselocal + "index.html"
 				}]
 			}
-		}
+		},
 //		includereplace:{
 //			options:{
 //				globals: {
@@ -122,28 +122,40 @@ module.exports = function(grunt){
 //				}
 //			}
 //		},
-//		compress:{
-//			main:{
-//				options: {
-//					archive: "html.zip",
-//					mode:"zip"
-//				},
-//				files:[
-//					{expand:true, src: ["index.html","views/**/*.html"],dest:"/"}
-//				]
-//			}
-//		}
+		copy: {
+			index: {
+				src:releaselocal + "index.html",
+				dest: "index.html"
+			}
+		},
+		clean:{
+			index: ["index.html"]
+		},
+		compress:{
+			main:{
+				options: {
+					archive: "upload.zip",
+					mode:"zip"
+				},
+				files:[
+					{expand:true, src: ["index.html","index_dev.html","callback.html","views/**/*.html"],dest:"/"}
+				]
+			}
+		}
 	});
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-jade');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 	//grunt.loadNpmTasks('grunt-contrib-htmlmin');
-	//grunt.loadNpmTasks('grunt-contrib-compress');
 	//grunt.loadNpmTasks('grunt-include-replace');
 
 	grunt.registerTask('css',['concat:css','cssmin']);
 	grunt.registerTask('default',['html2js','concat','uglify',"cssmin","jade:release", "jade:debug"]);
-	grunt.registerTask('debug',['jade:debug']);
+	grunt.registerTask('debug',['jade:debug','compress:main']);
+	grunt.registerTask('zip',['copy:index','compress:main','clean:index']);
 };

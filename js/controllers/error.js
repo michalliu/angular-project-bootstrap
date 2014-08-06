@@ -9,9 +9,13 @@
 			$http,
 			page) {
 
+			page.log("index control init");
+
 			var errorMsg=page.cache.get("errorMessage");
 			if (errorMsg) {
 				$scope.message = errorMsg;
 			}
+
+			page.log("index control init finished");
 	}]);
 }());

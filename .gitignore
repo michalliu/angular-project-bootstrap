@@ -2,7 +2,8 @@
 /index_dev.html
 /jade/config.json
 /node_modules
-*.swp
+/temp
 /doc
 /raw
-/temp
+*.zip
+*.swp

@@ -1,7 +1,8 @@
 /*jshint browser:true*/
-/*global angular, QC, console, location*/
+/*global angular, QC, console, location,$, document*/
 (function pageProviderInit(){ "use strict";
 	var appCache;
+	var eventTracerLastEvent=false;
 	angular.module("appProviders").
 
 	factory("page",["$rootScope",
@@ -30,6 +31,38 @@
 			loginInfo: null,
 			loginProfile: null,
 			cache: appCache,
+			preventWindowClose: function (message) {
+				$(window).off('beforeunload').on('beforeunload', function(){
+					page.log("beforeunload triggered");
+					if (eventTracerLastEvent) {
+						page.log("beforeunload ignored");
+						return;
+					}
+					return message;
+				});
+			},
+			allowWindowClose: function() {
+				page.log("beforeunload 解除注册");
+				$(window).off('beforeunload');
+			},
+			getGroupInfoById: function (gid) {
+				var list, grpInfo;
+				if (page.loginProfile &&
+						page.loginProfile.groupList &&
+						page.loginProfile.groupList.groupInfoList) {
+					list = page.loginProfile.groupList.groupInfoList;
+					for (var i in list) {
+						if (list.hasOwnProperty(i)) {
+							grpInfo = list[i];
+							if (grpInfo.group.gid == gid) {
+								return grpInfo;
+							}
+						}
+					}
+				}
+				page.log("");
+				return null;
+			},
 			setLoginInfo: function (info) {
 				if (info) {
 					if (!info.loginType) {
@@ -61,7 +94,9 @@
 				}, 100);
 			},
 			logout: function(){
+				page.log("登出QQ互联");
 				QC.Login.signOut();
+				page.liveUpload.destory();
 			},
 			getOpenID: function(callback) {
 				QC.Login.getMe(function(openId, accessToken){
@@ -73,23 +108,29 @@
 			},
 			exe: null,
 			liveUpload:{
+				destory: function () {
+					page.log("请求释放控件");
+					if (page.exe) {
+						try {
+							page.exe.Uninit();
+							page.exe = null;
+						} catch (ex) {
+							page.log("释放控件失败，" + ex);
+							return;
+						}
+						page.log("释放控件成功");
+					} else {
+						page.log("无法释放控件，控件尚未初始化");
+					}
+				},
 				onProcessStart: function (iResultCode) {
 					page.log("[live-upload] process start with code " + iResultCode);
 					if (1 == iResultCode) {
-						if (page.exe) {
-							try {
-								page.exe.Uninit();
-								page.exe = null;
-							} catch (ex) {
-								page.log("释放控件失败，" + ex);
-								return;
-							}
-							page.log("释放控件成功");
-						} else {
-							page.log("无法释放控件，控件不存在");
-						}
-						page.dialog.alert("已经有一个客户端在运行了");
-						window.close();
+						page.liveUpload.destory();
+						// 客户端只允许一个实例
+						page.dialog.alert("已经登录了一个账号，不能重复登录", function () {
+							window.close();
+						});
 					}
 				},
 				onNotifyInfo: function (sType, sInfo) {
@@ -101,12 +142,25 @@
 						case "MusicPlayingChanged":
 							switch(sInfo) {
 								case "playing":
-									page.info("[live-upload]发生事件，QQ音乐开始播放");
+									page.log("[live-upload]发生事件，QQ音乐开始播放");
+									if (page.liveUpload.onMusicPlayingStateChange) page.liveUpload.onMusicPlayingStateChange("playing");
 									break;
 								case "noplaying":
-									page.info("发生事件，QQ音乐停止播放");
+									page.log("发生事件，QQ音乐停止播放");
+									if (page.liveUpload.onMusicPlayingStateChange) page.liveUpload.onMusicPlayingStateChange("noplaying");
 									break;
 							}
+							break;
+						case "VolumeFeedback":
+							page.log("energe change " + sInfo);
+							if (page.liveUpload.onEnergeChange) {
+								page.liveUpload.onEnergeChange(sInfo);
+							}
+							break;
+						case "ErrCloseQqMusic":
+							// QQ音乐音效插件安装失败
+							page.log("发生事件，QQ音乐插件安装失败，需要关闭QQ音乐后重新安装");
+							if (page.liveUpload.onInstallQQMusicPluginFailed) page.liveUpload.onInstallQQMusicPluginFailed();
 							break;
 					}
 				},
@@ -142,6 +196,9 @@
 						case "setvolume":
 						case "backgroundmusic":
 						case "encodeparam":
+						case "startvolfeedback":
+						case "stopvolfeedback":
+						case "save_record":
 							if (!page.exe) {
 								page.warn("[live-upload] no exe");
 							} else {
@@ -154,14 +211,53 @@
 				}
 			},
 			dialog:{
-				alert: function (message) {
-					$win.alert(message);
-				},
-				confirm: function(title, message, ok, cancel) {
-					if($win.confirm(message)){
+				alert: function (message, ok) {
+					if (false) {
+						$win.alert(message);
 						if(ok) ok();
-					} else{
-						if(cancel) cancel();
+					} else {
+						$("#alertDialogClose").unbind("click.room").bind("click.room", function () {
+							$("#alertDialog").hide();
+						});
+						$("#alertDialogContent").text(message);
+						$("#alertDialogCloseButton").unbind("click.room").bind("click.room", function () {
+							$("#alertDialog").hide();
+							if (ok) ok();
+						});
+						$(".mask").height($(document).height() + "px");
+						$("#alertDialog").show();
+					}
+				},
+				confirm: function(title, message, ok, cancel, attrs) {
+					if (false) {
+						if($win.confirm(message)){
+							if(ok) ok();
+						} else{
+							if(cancel) cancel();
+						}
+					} else {
+						if (title) $("#confirmDialogTitle").text(title);
+						$("#confirmDialogClose").unbind("click.room").bind("click.room", function () {
+							$("#confirmDialog").hide();
+							if (cancel) cancel();
+						});
+						$("#confirmDialogContent").text(message);
+						$("#confirmDialogConfirmButton").
+							unbind("click.room").
+							text(attrs && attrs.confirmText ? attrs.confirmText : "确定").
+							bind("click.room", function () {
+							$("#confirmDialog").hide();
+							if (ok) ok();
+						});
+						$("#confirmDialogCloseButton").
+							unbind("click.room").
+							text(attrs && attrs.cancelText ? attrs.cancelText : "关闭").
+							bind("click.room", function () {
+							$("#confirmDialog").hide();
+							if (cancel) cancel();
+						});
+						$(".mask").height($(document).height() + "px");
+						$("#confirmDialog").show();
 					}
 				}
 			},
@@ -185,7 +281,7 @@
 							code: "",
 							req: {
 								"gid": gid,
-								"forceType": "",
+								"forceType": 1,
 								"from_pc": 1
 							}
 						})
@@ -225,7 +321,15 @@
 						})
 					});
 				}
+			},
+			traceEvent: function () {
+				eventTracer();
 			}
+		};
+
+		window.onunload=function () {
+			if (page.exe) {page.exe.Uninit();}
+			if (page.onAppExit) {page.onAppExit();}
 		};
 
 		log("page init");
@@ -236,7 +340,22 @@
 	function log(str) {
 		if(window.console) console.info("[ng-app] " + str);
 	}
+
 	function logWarn(str) {
 		if(window.console) console.warn("[ng-app] " + str);
 	}
+
+	function eventTracer() {
+		eventTracerLastEvent=true;
+		setTimeout(function() {
+			eventTracerLastEvent=false;
+		}, 100);
+	}
+
+	if (document.body.addEventListener) {
+		document.body.addEventListener("click", eventTracer, true);
+	} else if(document.body.attachEvent) {
+		document.attachEvent("onclick", eventTracer);
+	}
+
 }());

@@ -10,14 +10,16 @@
 
 		page.log("login control init");
 
-		// 已经登录了
-		if (page.isBasicLogin()) {
-			page.log("user already logged in, redirect to index page");
-			page.redirectTo("/index");
+		var errorMsg=page.cache.get("errorMessage");
+
+		if (errorMsg) {
+			$scope.message = errorMsg;
 		}
 
 		$scope.doLogin = function () {
 			page.login();
 		};
+
+		page.log("login control init finished");
 	}]);
 }());

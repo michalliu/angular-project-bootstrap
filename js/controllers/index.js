@@ -21,5 +21,6 @@
 		
 		page.redirectTo("/room");
 
+		page.log("index control init finished");
 	}]);
 }());

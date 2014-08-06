@@ -1,12 +1,11 @@
 <div class="login-wrap login">
     <div class="login-header">
         <div class="logo"></div>
-        <p class="title"></p>
+        <!-- <p class="title"></p> -->
     </div>
     <div class="login-content">
-        <div class="warning"><span class="icon-warning"></span>您刚刚登入的账号为2539687666，该账号未开放体验资格 <br/>
-            请尝试使用其他账号登入</div>
-        <button class="qq_login" ng-click="doLogin()" ><span class="icon-qq"></span>QQ登录</button>
+		<div class="warning" ng-show="message"><span class="icon-warning"></span>{{message}}</div>
+        <button class="qq_login" ng-click="doLogin()"><span class="icon-qq"></span>QQ登录</button>
         <p class="tips_txt">暂时仅支持QQ账号登入</p>
     </div>
 </div>

@@ -65,6 +65,11 @@
 				groupInfoFeched: ["$q","page", function ($q,page) {
 					// 需要进一步拿到openid,accesstoken,uid,grouplist
 					var q=$q.defer();
+					if (oldLocation == null) {
+						// 直接用/room这个path过来的请求，会自动跳转到/index
+						// 这里避免重复发起请求
+						return;
+					}
 					page.log("user login info is incomplete, fetch openid...");
 					page.getOpenID(function (id, token) {
 						page.setLoginInfo({
@@ -78,7 +83,13 @@
 								q.resolve();
 							} else {
 								q.reject();
-								page.dialog.alert(res.message);
+								//page.dialog.alert(res.message);
+								if (res.message=="不在白名单内") {
+									page.cache.put("errorMessage","账号未开放体验资格，请尝试使用其他账号登入");
+								} else {
+									page.cache.put("errorMessage",res.message);
+								}
+								page.redirectTo("/login");
 							}
 						}).error(function () {
 							q.reject();
@@ -95,7 +106,7 @@
 			resolve: conditions
 		}).
 		when('/error', {
-			template:"{{message}}",
+			templateUrl: "views/error.html",
 			controller: "errorControl"
 		}).
 		otherwise({
